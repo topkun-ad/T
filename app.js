@@ -1,220 +1,130 @@
 document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
-    const taskForm = document.getElementById('task-form');
-    const taskIdInput = document.getElementById('task-id');
-    const titleInput = document.getElementById('task-title');
-    const dateInput = document.getElementById('task-date');
-    const cutoffInput = document.getElementById('task-cutoff');
-    const timeInput = document.getElementById('task-time');
-    const prioritySelect = document.getElementById('task-priority');
-    const statusSelect = document.getElementById('task-status');
-    const categoryInput = document.getElementById('task-category');
-    const clearBtn = document.getElementById('clear-btn');
+    const memoForm = document.getElementById('memo-form');
+    const textInput = document.getElementById('memo-text');
     const saveBtn = document.getElementById('save-btn');
-    const tasksList = document.getElementById('tasks-list');
-    const filterBtns = document.querySelectorAll('.filter-btn');
+    const memosList = document.getElementById('memos-list');
     const spinner = document.getElementById('loading-spinner');
 
-    let currentTasks = [];
-    let currentFilter = 'all';
+    let currentMemos = [];
 
     // Initialize
-    fetchTasks();
+    fetchMemos();
 
     // Event Listeners
-    taskForm.addEventListener('submit', handleSaveTask);
-    clearBtn.addEventListener('click', clearForm);
-    
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            currentFilter = e.target.dataset.filter;
-            renderTasks();
-        });
-    });
+    memoForm.addEventListener('submit', handleSaveMemo);
 
     // API Functions
-    async function fetchTasks() {
+    async function fetchMemos() {
         showLoading(true);
         try {
-            const response = await fetch('/api/tasks');
-            if (!response.ok) throw new Error('Failed to fetch tasks');
-            currentTasks = await response.json();
+            const response = await fetch('/api/memos');
+            if (!response.ok) throw new Error('Failed to fetch memos');
+            currentMemos = await response.json();
             
-            // Sort by created_at descending (newest first)
-            currentTasks.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+            // Sort by date descending (newest first)
+            currentMemos.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
             
-            renderTasks();
+            renderMemos();
         } catch (error) {
             console.error(error);
-            alert('Failed to load tasks. Please check your connection.');
+            alert('Failed to load memos. Please check your connection.');
         } finally {
             showLoading(false);
         }
     }
 
-    async function handleSaveTask(e) {
+    async function handleSaveMemo(e) {
         e.preventDefault();
         
-        const taskData = {
-            task_id: taskIdInput.value || Date.now().toString(),
-            title: titleInput.value.trim(),
-            date: dateInput.value,
-            cutoff_date: cutoffInput.value,
-            due_time: timeInput.value,
-            priority: prioritySelect.value,
-            status: statusSelect.value,
-            category: categoryInput.value.trim(),
+        const text = textInput.value.trim();
+        if (!text) return;
+
+        const memoData = {
+            id: Date.now().toString(),
+            text: text,
+            date: new Date().toLocaleString()
         };
-
-        if (!taskData.title || !taskData.date) {
-            alert('Title and Date are required!');
-            return;
-        }
-
-        const isEditing = !!taskIdInput.value;
-        const method = isEditing ? 'PUT' : 'POST';
 
         showLoading(true);
         saveBtn.disabled = true;
 
         try {
-            const response = await fetch('/api/tasks', {
-                method: method,
+            const response = await fetch('/api/memos', {
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(taskData)
+                body: JSON.stringify(memoData)
             });
 
-            if (!response.ok) throw new Error('Failed to save task');
+            if (!response.ok) throw new Error('Failed to save memo');
             
-            clearForm();
-            await fetchTasks(); // Refresh list
+            textInput.value = '';
+            await fetchMemos(); // Refresh list
         } catch (error) {
             console.error(error);
-            alert('Failed to save task. Check console for details.');
+            alert('Failed to save memo. Check console for details.');
         } finally {
             showLoading(false);
             saveBtn.disabled = false;
         }
     }
 
-    async function deleteTask(id) {
-        if (!confirm('Are you sure you want to delete this task?')) return;
+    async function deleteMemo(id) {
+        if (!confirm('정말 이 메모를 삭제하시겠습니까?')) return;
 
         showLoading(true);
         try {
-            const response = await fetch(`/api/tasks?id=${id}`, {
+            const response = await fetch(`/api/memos?id=${id}`, {
                 method: 'DELETE'
             });
 
-            if (!response.ok) throw new Error('Failed to delete task');
+            if (!response.ok) throw new Error('Failed to delete memo');
             
             // Optimistic UI update
-            currentTasks = currentTasks.filter(t => t.task_id !== id);
-            renderTasks();
+            currentMemos = currentMemos.filter(m => m.id !== id);
+            renderMemos();
         } catch (error) {
             console.error(error);
-            alert('Failed to delete task.');
+            alert('Failed to delete memo.');
         } finally {
             showLoading(false);
         }
     }
 
     // UI Functions
-    function renderTasks() {
-        tasksList.innerHTML = '';
+    function renderMemos() {
+        memosList.innerHTML = '';
         
-        let filteredTasks = currentTasks;
-        if (currentFilter !== 'all') {
-            let filterValue = currentFilter;
-            // Handle classname vs value differences if any, but they match here exactly.
-            filteredTasks = currentTasks.filter(t => t.status === filterValue);
-        }
-
-        if (filteredTasks.length === 0) {
-            tasksList.innerHTML = `<div style="text-align:center; padding: 2rem; color: var(--text-secondary);">No tasks found.</div>`;
+        if (currentMemos.length === 0) {
+            memosList.innerHTML = `<div style="text-align:center; padding: 2rem; color: var(--text-secondary);">저장된 메모가 없습니다.</div>`;
             return;
         }
 
-        filteredTasks.forEach(task => {
-            tasksList.appendChild(createTaskElement(task));
+        currentMemos.forEach(memo => {
+            memosList.appendChild(createMemoElement(memo));
         });
     }
 
-    function createTaskElement(task) {
+    function createMemoElement(memo) {
         const div = document.createElement('div');
-        div.className = 'task-item';
-        div.id = `task-${task.task_id}`;
-
-        const priorityClass = `priority-${task.priority.toLowerCase()}`;
-        const statusClass = `status-${task.status.toLowerCase().replace(' ', '-')}`;
+        div.className = 'memo-item';
+        div.id = `memo-${memo.id}`;
 
         div.innerHTML = `
-            <div class="task-header">
-                <div class="task-title">${escapeHTML(task.title)}</div>
-                <div class="task-badges">
-                    <span class="badge ${priorityClass}">${task.priority}</span>
-                    <span class="badge ${statusClass}">${task.status}</span>
-                </div>
-            </div>
-            
-            <div class="task-details">
-                <div class="detail-item">
-                    <span class="detail-label">Date</span>
-                    <span class="detail-value">${task.date || '-'}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Cutoff Date</span>
-                    <span class="detail-value">${task.cutoff_date || '-'}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Due Time</span>
-                    <span class="detail-value">${task.due_time || '-'}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Category</span>
-                    <span class="detail-value">${escapeHTML(task.category) || '-'}</span>
-                </div>
-            </div>
-
-            <div class="task-actions">
-                <button class="action-btn edit" data-id="${task.task_id}">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                    Edit
-                </button>
-                <button class="action-btn delete" data-id="${task.task_id}">
+            <div class="memo-content">${escapeHTML(memo.text)}</div>
+            <div class="memo-footer">
+                <span class="memo-date">${memo.date}</span>
+                <button class="action-btn delete" data-id="${memo.id}">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                    Delete
+                    삭제
                 </button>
             </div>
         `;
 
         // Bind events
-        div.querySelector('.edit').addEventListener('click', () => loadTaskIntoForm(task));
-        div.querySelector('.delete').addEventListener('click', () => deleteTask(task.task_id));
+        div.querySelector('.delete').addEventListener('click', () => deleteMemo(memo.id));
 
         return div;
-    }
-
-    function loadTaskIntoForm(task) {
-        taskIdInput.value = task.task_id;
-        titleInput.value = task.title;
-        dateInput.value = task.date;
-        cutoffInput.value = task.cutoff_date;
-        timeInput.value = task.due_time;
-        prioritySelect.value = task.priority || 'Medium';
-        statusSelect.value = task.status || 'Pending';
-        categoryInput.value = task.category;
-
-        saveBtn.textContent = 'Update Task';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function clearForm() {
-        taskForm.reset();
-        taskIdInput.value = '';
-        saveBtn.textContent = 'Save Task';
     }
 
     function showLoading(isLoading) {

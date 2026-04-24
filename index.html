@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FranklinDiary</title>
+    <title>Beautiful Memo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -13,77 +13,26 @@
     <div class="app-container glass">
         <header>
             <div class="header-content">
-                <h1>FranklinDiary</h1>
-                <p>Manage your tasks efficiently</p>
+                <h1>Beautiful Memo</h1>
+                <p>간단하고 아름다운 메모장</p>
             </div>
             <div id="loading-spinner" class="spinner hidden"></div>
         </header>
 
         <main>
-            <form id="task-form" class="input-section glass-form">
-                <input type="hidden" id="task-id">
-                
-                <div class="form-group full-width">
-                    <label for="task-title">Task Title</label>
-                    <input type="text" id="task-title" placeholder="What do you need to do?" required>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="task-date">Date</label>
-                        <input type="date" id="task-date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="task-cutoff">Cutoff Date</label>
-                        <input type="date" id="task-cutoff">
-                    </div>
-                    <div class="form-group">
-                        <label for="task-time">Due Time</label>
-                        <input type="time" id="task-time">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="task-priority">Priority</label>
-                        <select id="task-priority">
-                            <option value="High">High</option>
-                            <option value="Medium" selected>Medium</option>
-                            <option value="Low">Low</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="task-status">Status</label>
-                        <select id="task-status">
-                            <option value="Pending" selected>Pending</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Done">Done</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="task-category">Category</label>
-                        <input type="text" id="task-category" placeholder="e.g. Work, Personal">
-                    </div>
-                </div>
-
-                <div class="form-actions full-width">
-                    <button type="button" id="clear-btn" class="glass-btn secondary">Clear</button>
-                    <button type="submit" id="save-btn" class="glass-btn primary">Save Task</button>
+            <form id="memo-form" class="input-section glass-form">
+                <textarea id="memo-text" placeholder="메모를 입력하세요..." required rows="4"></textarea>
+                <div class="form-actions">
+                    <button type="submit" id="save-btn" class="glass-btn primary">메모 저장</button>
                 </div>
             </form>
 
-            <div class="tasks-header">
-                <h2>Your Tasks</h2>
-                <div class="status-filters">
-                    <button class="filter-btn active" data-filter="all">All</button>
-                    <button class="filter-btn" data-filter="Pending">Pending</button>
-                    <button class="filter-btn" data-filter="In Progress">In Progress</button>
-                    <button class="filter-btn" data-filter="Done">Done</button>
-                </div>
+            <div class="memos-header">
+                <h2>내 메모</h2>
             </div>
 
-            <div class="tasks-container" id="tasks-list">
-                <!-- Tasks will be injected here -->
+            <div class="memos-container" id="memos-list">
+                <!-- Memos will be injected here -->
             </div>
         </main>
     </div>

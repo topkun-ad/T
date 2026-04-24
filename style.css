@@ -7,9 +7,6 @@
     --accent: #3b82f6;
     --accent-hover: #2563eb;
     --danger: #ef4444;
-    --danger-hover: #dc2626;
-    --success: #10b981;
-    --warning: #f59e0b;
 }
 
 * {
@@ -19,7 +16,7 @@
 }
 
 body {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Outfit', -apple-system, sans-serif;
     background: linear-gradient(135deg, #020617, #0f172a);
     color: var(--text-primary);
     min-height: 100vh;
@@ -30,7 +27,7 @@ body {
 
 .app-container {
     width: 100%;
-    max-width: 800px;
+    max-width: 600px;
     padding: 2.5rem;
     display: flex;
     flex-direction: column;
@@ -85,60 +82,36 @@ header p {
 /* Form Styles */
 .glass-form {
     background: rgba(15, 23, 42, 0.4);
-    padding: 2rem;
+    padding: 1.5rem;
     border-radius: 16px;
     border: 1px solid rgba(255,255,255,0.05);
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
-.form-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.full-width {
-    grid-column: 1 / -1;
-}
-
-label {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-}
-
-input, select {
+textarea {
     width: 100%;
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
-    padding: 0.75rem 1rem;
+    padding: 1rem;
     border-radius: 12px;
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-family: inherit;
     transition: all 0.2s ease;
+    resize: vertical;
 }
 
-input:focus, select:focus {
+textarea:focus {
     outline: none;
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
-/* Buttons */
 .form-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 0.5rem;
 }
 
 .glass-btn {
@@ -162,59 +135,24 @@ input:focus, select:focus {
     transform: translateY(-2px);
 }
 
-.glass-btn.secondary {
-    background: transparent;
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-}
-
-.glass-btn.secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-/* Tasks Header */
-.tasks-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* Memos Header */
+.memos-header {
     margin-top: 1rem;
 }
 
-.tasks-header h2 {
+.memos-header h2 {
     font-size: 1.5rem;
     font-weight: 600;
 }
 
-.status-filters {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.filter-btn {
-    background: transparent;
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    padding: 0.4rem 1rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.filter-btn.active, .filter-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-primary);
-    border-color: rgba(255, 255, 255, 0.3);
-}
-
-/* Tasks List */
-.tasks-container {
+/* Memos List */
+.memos-container {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.task-item {
+.memo-item {
     background: rgba(15, 23, 42, 0.6);
     border: 1px solid var(--border-color);
     border-radius: 16px;
@@ -223,84 +161,32 @@ input:focus, select:focus {
     flex-direction: column;
     gap: 1rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
 }
 
-.task-item:hover {
+.memo-item:hover {
     transform: translateY(-4px);
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
     border-color: rgba(255,255,255,0.2);
 }
 
-.task-header {
+.memo-content {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.memo-footer {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 1rem;
 }
 
-.task-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-}
-
-.task-badges {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-/* Status Badges */
-.badge.status-pending { background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
-.badge.status-in-progress { background: rgba(59, 130, 246, 0.2); color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.3); }
-.badge.status-done { background: rgba(16, 185, 129, 0.2); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
-
-/* Priority Badges */
-.badge.priority-high { color: var(--danger); }
-.badge.priority-medium { color: var(--warning); }
-.badge.priority-low { color: var(--success); }
-
-.task-details {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
-    font-size: 0.9rem;
+.memo-date {
+    font-size: 0.85rem;
     color: var(--text-secondary);
-    background: rgba(0,0,0,0.2);
-    padding: 1rem;
-    border-radius: 12px;
-}
-
-.detail-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.detail-label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    opacity: 0.7;
-}
-
-.detail-value {
-    color: var(--text-primary);
-    font-weight: 500;
-}
-
-.task-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-    margin-top: 0.5rem;
 }
 
 .action-btn {
@@ -317,11 +203,6 @@ input:focus, select:focus {
     font-size: 0.9rem;
 }
 
-.action-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-primary);
-}
-
 .action-btn.delete:hover {
     background: rgba(239, 68, 68, 0.2);
     color: var(--danger);
@@ -333,29 +214,13 @@ input:focus, select:focus {
     to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes fadeOut {
-    to { opacity: 0; transform: scale(0.95); }
-}
-
-.task-item {
+.memo-item {
     animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.task-item.removing {
-    animation: fadeOut 0.3s ease forwards;
 }
 
 /* Responsive */
 @media (max-width: 600px) {
     .app-container {
         padding: 1.5rem;
-    }
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-    .tasks-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
     }
 }
