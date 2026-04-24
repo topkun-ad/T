@@ -1,32 +1,89 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beautiful Memo App</title>
+    <title>FranklinDiary</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-container glass">
         <header>
-            <h1>My Notes</h1>
-            <p>Capture your ideas effortlessly</p>
+            <div class="header-content">
+                <h1>FranklinDiary</h1>
+                <p>Manage your tasks efficiently</p>
+            </div>
+            <div id="loading-spinner" class="spinner hidden"></div>
         </header>
 
         <main>
-            <div class="input-section">
-                <textarea id="note-input" placeholder="What's on your mind?..." rows="3"></textarea>
-                <button id="add-btn" class="glass-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    Add Note
-                </button>
+            <form id="task-form" class="input-section glass-form">
+                <input type="hidden" id="task-id">
+                
+                <div class="form-group full-width">
+                    <label for="task-title">Task Title</label>
+                    <input type="text" id="task-title" placeholder="What do you need to do?" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-date">Date</label>
+                        <input type="date" id="task-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-cutoff">Cutoff Date</label>
+                        <input type="date" id="task-cutoff">
+                    </div>
+                    <div class="form-group">
+                        <label for="task-time">Due Time</label>
+                        <input type="time" id="task-time">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-priority">Priority</label>
+                        <select id="task-priority">
+                            <option value="High">High</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-status">Status</label>
+                        <select id="task-status">
+                            <option value="Pending" selected>Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Done">Done</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-category">Category</label>
+                        <input type="text" id="task-category" placeholder="e.g. Work, Personal">
+                    </div>
+                </div>
+
+                <div class="form-actions full-width">
+                    <button type="button" id="clear-btn" class="glass-btn secondary">Clear</button>
+                    <button type="submit" id="save-btn" class="glass-btn primary">Save Task</button>
+                </div>
+            </form>
+
+            <div class="tasks-header">
+                <h2>Your Tasks</h2>
+                <div class="status-filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="Pending">Pending</button>
+                    <button class="filter-btn" data-filter="In Progress">In Progress</button>
+                    <button class="filter-btn" data-filter="Done">Done</button>
+                </div>
             </div>
 
-            <div class="notes-container" id="notes-list">
-                <!-- Notes will be injected here -->
+            <div class="tasks-container" id="tasks-list">
+                <!-- Tasks will be injected here -->
             </div>
         </main>
     </div>
