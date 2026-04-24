@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beautiful Memo App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container glass">
+        <header>
+            <h1>My Notes</h1>
+            <p>Capture your ideas effortlessly</p>
+        </header>
+
+        <main>
+            <div class="input-section">
+                <textarea id="note-input" placeholder="What's on your mind?..." rows="3"></textarea>
+                <button id="add-btn" class="glass-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Add Note
+                </button>
+            </div>
+
+            <div class="notes-container" id="notes-list">
+                <!-- Notes will be injected here -->
+            </div>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
