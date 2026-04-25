@@ -19,7 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
         showLoading(true);
         try {
             const response = await fetch('/api/memos');
-            if (!response.ok) throw new Error('Failed to fetch memos');
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.details || errData.error || 'Failed to fetch memos');
+            }
             currentMemos = await response.json();
             
             // Sort by date descending (newest first)
@@ -28,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderMemos();
         } catch (error) {
             console.error(error);
-            alert('Failed to load memos. Please check your connection.');
+            alert('Error loading memos: ' + error.message);
         } finally {
             showLoading(false);
         }
@@ -56,13 +59,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(memoData)
             });
 
-            if (!response.ok) throw new Error('Failed to save memo');
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.details || errData.error || 'Failed to save memo');
+            }
             
             textInput.value = '';
             await fetchMemos(); // Refresh list
         } catch (error) {
             console.error(error);
-            alert('Failed to save memo. Check console for details.');
+            alert('Error saving memo: ' + error.message);
         } finally {
             showLoading(false);
             saveBtn.disabled = false;
@@ -78,14 +84,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'DELETE'
             });
 
-            if (!response.ok) throw new Error('Failed to delete memo');
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.details || errData.error || 'Failed to delete memo');
+            }
             
             // Optimistic UI update
             currentMemos = currentMemos.filter(m => m.id !== id);
             renderMemos();
         } catch (error) {
             console.error(error);
-            alert('Failed to delete memo.');
+            alert('Error deleting memo: ' + error.message);
         } finally {
             showLoading(false);
         }
